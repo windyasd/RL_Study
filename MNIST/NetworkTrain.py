@@ -38,22 +38,6 @@ def inference(input_tensor, avg_class, weights1, biases1, weights2, biases2):
         layer1 = tf.nn.relu(tf.matmul(input_tensor, avg_class.average(weights1)) + avg_class.average(biases1))
         return tf.matmul(layer1, avg_class.average(weights2)) + avg_class.average(biases2)
 
-def preprocess(x, y):   # 输入x的shape 为[b, 32, 32], y为[b]
-    """
-    预处理函数
-    Example:打乱排序，设置batchSize为128,进行预处理
-    test_db = test_db.shuffle(1000).batch(512).map(preprocess)
-    """
-    # 将像素值标准化到 0~1区间
-    x = tf.cast(x, dtype=tf.float32) / 255.
-    # 将图片改为28*28大小的
-    x = tf.reshape(x, [-1, 28 * 28])
-# 这个reshape我认为是和数据的存储顺序发生冲突，读取的数据应该不是原图的数据，而是被打乱的数据
-    # 将数据集的类别标签(数字0-10)转换为one-hot 编码
-    y = tf.cast(y, dtype=tf.int32)  # 转成整型张量
-    y = tf.one_hot(y, depth=10)
-    return x, y
-
 
 def shuffle_set(train_image, train_label, test_image, test_label):
     train_row = list(range(len(train_label)))
@@ -140,6 +124,8 @@ def train():
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
         (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+        x_train = x_train.reshape(x_train.shape[0], -1) / 255.0
+        x_test = x_test.reshape(x_test.shape[0], -1) / 255.0
         # 转one-hot标签
         y_train = np_utils.to_categorical(y_train, num_classes=10)
         y_test = np_utils.to_categorical(y_test, num_classes=10)

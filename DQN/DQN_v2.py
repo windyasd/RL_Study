@@ -42,9 +42,9 @@ class DQNReplayer:
         self.capacity = capacity
 
     def store(self, *args):
-        self.memory.loc[self.i] = args
-        self.i = (self.i + 1) % self.capacity
-        self.count = min(self.count + 1, self.capacity)
+        self.memory.loc[self.i] = args                                  #存储数据
+        self.i = (self.i + 1) % self.capacity                           #数据位置循环后移
+        self.count = min(self.count + 1, self.capacity)                 #记录已经存储的数据个数
 
     def sample(self, size):
         indices = np.random.choice(self.count, size=size)

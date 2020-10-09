@@ -66,15 +66,18 @@ def train(x_train, y_train):
     with tf.control_dependencies([train_step, variables_averages_op]):
         train_op = tf.no_op(name='train')
 
-
+    # 初始化TensorFlow持久化类
     saver = tf.train.Saver()
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
         for i in range(TRAINING_STEPS):
-            Iteration_data = int(len(y_train) / BATCH_SIZE)
+            Iteration_data = int(len(y_train) / BATCH_SIZE)         # 自己编写的getBatch函数,确定batchs的个数
             xs, ys = get_batch(x_train, y_train, BATCH_SIZE, i % Iteration_data, Iteration_data)
             _, loss_value, step = sess.run([train_op, loss, global_step], feed_dict={x: xs, y_: ys})
+
+            # 每1000轮保存一次结果
             if i % 1000 == 0:
+                #输出当前的训练情况。这里输出的是损失函数。通过损失函数的大小可以大概了解训练的情况
                 print("After %d training step(s), loss on training batch is %g." % (step, loss_value))
                 saver.save(sess, os.path.join(MODEL_SAVE_PATH, MODEL_NAME), global_step=global_step)
 

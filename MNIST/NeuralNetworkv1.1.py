@@ -2,12 +2,13 @@
 # -*- coding: UTF-8 -*-
 """
 @author:LXM
-@file:NetworkTrain.py
-@time:2020/10/06
+@file:NeuralNetworkv1.1.py
+@time:2020/10/08
 
-从keras导入MNIST数据集
-注意keras中的数据集输出为具体的值，而不是一个向量
+    v1.0版本中前向传播函数def inference(input_tensor, avg_class, weights1, biases1, weights2, biases2):
+包含了神经网络所有的参数，当神经网络结构复杂时，应该用到tensorflow的变量管理
 """
+
 import tensorflow.compat.v1 as tf
 from keras.utils import np_utils
 import tensorflow.keras as keras
@@ -98,7 +99,7 @@ def train(x_train,y_train,x_test, y_test,Validata_Percentage):
         LEARNING_RATE_BASE,
         global_step,
         int(len(y_train)*(1-Validata_Percentage)) / BATCH_SIZE,                  # 过完所有的训练数据需要的迭代次数
-        LEARNING_RATE_DECAY,
+        LEARNING_RATE_DECAY,                                                       # 学习率衰减速度
         staircase=True)
 
     # 优化损失函数
@@ -108,7 +109,7 @@ def train(x_train,y_train,x_test, y_test,Validata_Percentage):
     # 在训练、神经网络模型时，每过一遍数据既需要通过反向传播来更新神经网络中的参数，
     # 又要更新每一个参数的滑到J平均值。为了一次完成多个操作， TensorFlow 提供了
     # tf.control dependencies 和 tf.group 两种机制 。 下面两行程序和
-    # train_op = tf . group(train_step, variables_averages_op ）是等价的
+    # train_op = tf.group(train_step, variables_averages_op ）是等价的
     with tf.control_dependencies([train_step, variables_averages_op]):
         train_op = tf.no_op(name='train')
 

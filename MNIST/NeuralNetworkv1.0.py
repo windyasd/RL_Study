@@ -5,7 +5,7 @@
 @file:NeuralNetworkv1.0.py
 @time:2020/10/06
 
-从keras导入MNIST数据集
+从keras导入LeNet5数据集
 注意keras中的数据集输出为具体的值，而不是一个向量
 """
 import tensorflow.compat.v1 as tf
@@ -159,7 +159,7 @@ def train(x_train,y_train,x_test, y_test,Validata_Percentage):
 
 
 def main(argv=None):
-    (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+    (x_train, y_train), (x_test, y_test) = keras.datasets.LeNet5.load_data()
     validata_percentage = 0.1           # 验证集大小
     train(x_train,y_train,x_test, y_test,validata_percentage)
 

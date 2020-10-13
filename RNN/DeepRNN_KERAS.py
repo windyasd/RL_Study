@@ -35,7 +35,7 @@ def generate_data(seq):
 
 
 if __name__ == '__main__':
-    tf.disable_eager_execution()
+    # tf.disable_eager_execution()
     # 用正弦函数生成训练和测试数据集合。
     test_start = (TRAINING_EXAMPLES + TIMESTEPS) * SAMPLE_GAP
     test_end = test_start + (TESTING_EXAMPLES + TIMESTEPS) * SAMPLE_GAP
@@ -51,13 +51,31 @@ if __name__ == '__main__':
     output = layers.RNN(cell)(inputs)
     predictions = layers.Dense(1, activation=None)(output)
     model = keras.Model(inputs=inputs, outputs=predictions, name="DeepRNN_model")
+
     model.summary()
     model.compile(
         loss=keras.losses.MeanSquaredError(),
-        optimizer=keras.optimizers.Adagrad(learning_rate=0.1),
-        metrics=["acc"]
+        optimizer=keras.optimizers.Adagrad(learning_rate=0.01),
+        metrics=["mape"]
     )
-    model.fit(train_X, train_y, batch_size=BATCH_SIZE, epochs=10)
-    model.evaluate(test_X, test_y)
+    model.fit(train_X, train_y, batch_size=BATCH_SIZE, epochs=5)
+    model.evaluate(train_X, train_y,batch_size=128)
+    # 将预测结果存入一个数组。
+    # print(model.predict(train_X[10:20]))
+    # print(train_y[10:20])
 
+    # predictions = []
+    # labels = []
+    # for i in range(TESTING_EXAMPLES):
+    #     predictions.append(model.predict(train_X[i]))
+    #     labels.append(train_y[i])
+    # # 计算rmse作为评价指标。
+    # predictions = np.array(predictions).squeeze()
+    # labels = np.array(labels).squeeze()
+    # 对预测的sin函数曲线进行绘图。
+    plt.figure()
+    plt.plot(model.predict(test_X), label='predictions')
+    plt.plot(test_y, label='real_sin')
+    plt.legend()
+    plt.show()
 

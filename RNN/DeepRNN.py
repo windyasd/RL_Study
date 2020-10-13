@@ -35,13 +35,7 @@ def generate_data(seq):
 
 # 定义网络结果和优化步骤
 def lstm_model(X, y, is_training):
-    # # 定义LSTM结构
-    # lstm_cell=tf.nn.rnn_cell.BasicLSTMCell(HIDDEN_SIZE)
-    # # 使用多层的LSTM结构。使用DropoutWrapper类实现dropOut功能
-    # cell = tf.nn.rnn_cell.MultiRNNCell([
-    #     tf.nn.rnn_cell.DropoutWrapper(lstm_cell)
-    #     for _ in range(NUM_LAYERS)])
-    # # 使用多层的LSTM结构。
+
     cell = tf.nn.rnn_cell.MultiRNNCell([
         tf.nn.rnn_cell.BasicLSTMCell(HIDDEN_SIZE)
         for _ in range(NUM_LAYERS)])
@@ -138,9 +132,7 @@ if __name__ == '__main__':
 
     with tf.Session() as sess:
         # 训练模型
-
         train(sess,train_X,train_y)
-
         # # 使用训练好的模型对测试数据进行预测。
         # print
         # "Evaluate model after training."

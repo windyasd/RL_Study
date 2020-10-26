@@ -36,6 +36,7 @@ def generate_data(seq):
 # 定义网络结果和优化步骤
 def lstm_model(X, y, is_training):
 
+    # 使用LSTMCell好像会出错
     cell = tf.nn.rnn_cell.MultiRNNCell([
         tf.nn.rnn_cell.BasicLSTMCell(HIDDEN_SIZE)
         for _ in range(NUM_LAYERS)])
@@ -45,13 +46,9 @@ def lstm_model(X, y, is_training):
     # output = outputs[:, -1, :]
     output= keras.layers.RNN(cell)(X)
 
-    # 对LSTM网络的输出再做加一层全链接层并计算损失。注意这里默认的损失为平均
-    # 平方差损失函数。
+    # 对LSTM网络的输出再做加一层全连接层，此步使用keras的全连接层在运行eval程序时会出错
     predictions=tf.layers.Dense(1,activation=None)(output)
-    # predictions=keras.layers.Dense(1)(output)
-    # predictions =tf.contrib.layers.fully_connected(output, 1, activation_fn=None)
-    # predictions = tf.contrib.layers.fully_connected(
-    #     output, 1, activation_fn=None)
+    # predictions=keras.layers.Dense(1, activation=None)(output)
 
     # 只在训练时计算损失函数和优化步骤。测试时直接返回预测结果。
     if not is_training:

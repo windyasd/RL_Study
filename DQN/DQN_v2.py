@@ -97,6 +97,7 @@ class DQNAgent:
         next_qs = self.target_net.predict(next_observations)
         next_max_qs = next_qs.max(axis=-1)
         us = rewards + self.gamma * (1. - dones) * next_max_qs
+        # 这两个targets很疑惑
         targets = self.evaluate_net.predict(observations)
         targets[np.arange(us.shape[0]), actions] = us
         self.evaluate_net.fit(observations, targets, verbose=0)
